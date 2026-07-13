@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overclock — Ranked Training</title>
+<meta name="description" content="Overclock turns your training into a ranked game. Log lifts, climb from Wood to Challenger, and compete with your gym. iOS & Android.">
+<meta property="og:title" content="Overclock — Ranked Training">
+<meta property="og:description" content="Turn your training into a ranked game. Climb the ladder. Compete with your gym.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{--lime:#c6f432;--red:#ff3b3b;--dark:#0c0d0b;--bg:#08090a;--panel:#111310;--off:#e9ecdf;--mut:#8ea62f;--gray:#8f958a;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--off);font-family:'Share Tech Mono',monospace;line-height:1.6;overflow-x:hidden;}
+  a{color:inherit;text-decoration:none;}
+  .scan{position:fixed;inset:0;pointer-events:none;z-index:1;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 3px,rgba(0,0,0,.13) 4px);opacity:.5;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px;position:relative;z-index:2;}
+  /* nav */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand .w{font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:3px;color:var(--lime);font-size:22px;}
+  nav .links a{color:var(--gray);letter-spacing:1px;font-size:13px;margin-left:22px;}
+  nav .links a:hover{color:var(--lime);}
+  /* hero */
+  .hero{text-align:center;padding:70px 0 60px;position:relative;}
+  .hero::before{content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:640px;height:640px;
+    background:radial-gradient(circle,rgba(198,244,50,.10) 0%,rgba(198,244,50,0) 60%);pointer-events:none;}
+  .ring{width:96px;height:96px;margin:0 auto 26px;filter:drop-shadow(0 0 22px rgba(198,244,50,.45));}
+  h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(38px,7vw,72px);letter-spacing:2px;line-height:1.02;color:#f4f7ea;}
+  h1 .hl{color:var(--lime);}
+  .kick{color:var(--mut);letter-spacing:4px;font-size:14px;margin-bottom:20px;}
+  .lede{color:#c7ccb6;font-size:clamp(16px,2.4vw,20px);max-width:620px;margin:22px auto 0;}
+  /* store buttons */
+  .stores{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:36px;}
+  .store{display:flex;align-items:center;gap:12px;background:#0e100c;border:1px solid rgba(198,244,50,.35);
+    border-radius:12px;padding:12px 20px;min-width:210px;position:relative;}
+  .store .ic{font-size:26px;line-height:1;color:var(--lime);}
+  .store .t{text-align:left;}
+  .store .t .s{font-size:10px;color:var(--gray);letter-spacing:1px;}
+  .store .t .b{font-family:'Orbitron',sans-serif;font-weight:700;font-size:15px;color:var(--off);letter-spacing:1px;}
+  .soon{position:absolute;top:-9px;right:10px;background:var(--red);color:#fff;font-size:9px;letter-spacing:1px;
+    padding:2px 7px;border-radius:4px;font-weight:bold;}
+  .notify{display:inline-block;margin-top:26px;background:var(--lime);color:var(--dark);font-family:'Orbitron',sans-serif;
+    font-weight:900;letter-spacing:1px;font-size:14px;padding:14px 26px;border-radius:10px;}
+  .notify:hover{filter:brightness(1.08);}
+  /* sections */
+  section{padding:56px 0;border-top:1px solid #191c15;}
+  h2{font-family:'Share Tech Mono',monospace;text-transform:uppercase;letter-spacing:3px;font-size:13px;color:var(--mut);margin-bottom:28px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;}
+  .card{background:var(--panel);border:1px solid rgba(198,244,50,.12);border-radius:14px;padding:24px;}
+  .card .n{font-family:'Orbitron',sans-serif;font-weight:900;color:var(--lime);font-size:16px;letter-spacing:1px;}
+  .card p{color:#aab097;font-size:14px;margin-top:10px;}
+  /* gyms band */
+  .gyms{background:linear-gradient(100deg,#101309,#0b0d08);border:1px solid rgba(198,244,50,.2);border-radius:18px;
+    padding:34px;display:flex;gap:26px;align-items:center;flex-wrap:wrap;justify-content:space-between;}
+  .gyms .txt{max-width:560px;}
+  .gyms h3{font-family:'Orbitron',sans-serif;font-weight:900;font-size:24px;color:#f4f7ea;letter-spacing:1px;}
+  .gyms h3 .rl{color:var(--red);}
+  .gyms p{color:#c7ccb6;font-size:15px;margin-top:10px;}
+  .gyms .cta{background:var(--lime);color:var(--dark);font-family:'Orbitron',sans-serif;font-weight:900;
+    letter-spacing:1px;font-size:14px;padding:14px 24px;border-radius:10px;white-space:nowrap;}
+  /* footer */
+  footer{border-top:1px solid #191c15;padding:34px 0 60px;color:var(--gray);font-size:12px;text-align:center;}
+  footer a{color:var(--mut);}footer a:hover{color:var(--lime);}
+  footer .row{margin-bottom:12px;letter-spacing:1px;}
+  .edit{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="scan"></div>
+<div class="wrap">
+
+  <nav>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" width="34" height="34"><circle cx="50" cy="50" r="38" fill="none" stroke="#c6f432" stroke-width="9"/><path d="M63.5 33.9 A21 21 0 1 0 63.5 66.1" fill="none" stroke="#c6f432" stroke-width="9"/><line x1="50" y1="50" x2="72" y2="50" stroke="#c6f432" stroke-width="9"/></svg>
+      <div class="w">OVERCLOCK</div>
+    </div>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#gyms">For Gyms</a>
+      <a href="#get">Get the App</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="get">
+    <div class="ring">
+      <svg viewBox="0 0 100 100" width="96" height="96"><circle cx="50" cy="50" r="38" fill="none" stroke="#c6f432" stroke-width="9"/><path d="M63.5 33.9 A21 21 0 1 0 63.5 66.1" fill="none" stroke="#c6f432" stroke-width="9"/><line x1="50" y1="50" x2="72" y2="50" stroke="#c6f432" stroke-width="9"/></svg>
+    </div>
+    <div class="kick">// RANKED TRAINING</div>
+    <h1>TURN TRAINING<br>INTO A <span class="hl">RANKED GAME</span></h1>
+    <p class="lede">Log your lifts. Climb the ladder from Wood to Challenger across seven muscle tracks — fairly scored by DOTS, so size doesn't matter. Compete with friends and your gym.</p>
+
+    <div class="stores">
+      <a class="store" href="#get"><span class="soon">SOON</span><span class="ic">&#63743;</span><div class="t"><div class="s">Download on the</div><div class="b">App Store</div></div></a>
+      <a class="store" href="#get"><span class="soon">SOON</span><span class="ic">&#9654;</span><div class="t"><div class="s">Get it on</div><div class="b">Google Play</div></div></a>
+    </div>
+    <a class="notify" href="mailto:ape.bomm@gmail.com?subject=Notify%20me%20when%20Overclock%20launches">▶ GET LAUNCH NOTICE</a>
+  </header>
+
+  <section id="features">
+    <h2>// What you get</h2>
+    <div class="grid">
+      <div class="card"><div class="n">▲ CLIMB</div><p>Seven tracks — Arms, Legs, Core, Chest, Back, Shoulders, Conditioning — roll into one overall rank. No skipping leg day to climb.</p></div>
+      <div class="card"><div class="n">⚖ FAIR</div><p>Scored by DOTS, not raw weight. A 130-lb lifter and a 230-lb lifter compete on even ground.</p></div>
+      <div class="card"><div class="n">⚔ COMPETE</div><p>Party up with friends and climb your gym's leaderboard. Seasons reset the ladder so there's always a fresh climb.</p></div>
+      <div class="card"><div class="n">◆ EARN</div><p>Badges, achievements, and REDLINE flair as you level up. Your hologram body-map lights up as each muscle group ranks.</p></div>
+    </div>
+  </section>
+
+  <section id="gyms">
+    <h2>// For gyms &amp; teams</h2>
+    <div class="gyms">
+      <div class="txt">
+        <h3>Keep your members <span class="rl">coming back</span>.</h3>
+        <p>Overclock turns training into a game your members actually stick with — a branded gym leaderboard, monthly challenges, and a dashboard that shows you who's active. Offer it free to members; license the dashboard for your gym.</p>
+      </div>
+      <a class="cta" href="mailto:ape.bomm@gmail.com?subject=Overclock%20for%20my%20gym">TALK TO US →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="row">// <span style="color:var(--lime);">OVERCLOCK</span> — RANKED TRAINING</div>
+    <div class="row">
+      <a href="https://d4nk.github.io/overclock-legal/PRIVACY-POLICY.html">Privacy Policy</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:ape.bomm@gmail.com">Support</a>
+      &nbsp;·&nbsp;
+      <a href="#get">Get the App</a>
+    </div>
+    <div class="row">© 2026 Torre Matrix LLC · Cathedral City, CA</div>
+  </footer>
+
+</div>
+</body>
+</html>
