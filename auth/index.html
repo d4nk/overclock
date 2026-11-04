@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- The query carries a one-time auth code: never send it anywhere, never index this page. -->
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0e11">
+<title>Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap">
+<style>
+  :root {
+    --bg: #0a0e11;
+    --surface: #0f1923;
+    --border: #1e3a50;
+    --text: #e0eaf2;
+    --muted: #8fb0c6;
+    --lime: #c6f432;
+    --on-lime: #0a0e11;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Share Tech Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  main { width: 100%; max-width: 420px; }
+  .wordmark {
+    font-family: "Orbitron", "Eurostile", "Arial Black", system-ui, sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--lime);
+    margin: 0 0 4px;
+  }
+  .sub { color: var(--muted); font-size: 11px; letter-spacing: 2px; margin: 0 0 28px; }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--lime);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: "Orbitron", "Eurostile", "Arial Black", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin: 0 0 12px;
+  }
+  p { font-size: 14px; line-height: 1.6; margin: 0; }
+  p + p { margin-top: 12px; }
+  .muted { color: var(--muted); font-size: 12px; }
+  .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    background: var(--lime);
+    color: var(--on-lime);
+    font-family: "Orbitron", "Arial Black", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px;
+    border-radius: 2px;
+  }
+  .btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <p class="wordmark">OVERCLOCK</p>
+  <p class="sub">// ACCOUNT LINK</p>
+
+  <section class="panel" aria-live="polite">
+    <h1 id="title">Opening Overclock</h1>
+    <p id="body">One moment&hellip;</p>
+    <p id="hint" class="muted" hidden></p>
+  </section>
+
+  <a id="open" class="btn" href="liftinglegends://auth/callback" hidden>Open Overclock</a>
+</main>
+
+<script>
+(function () {
+  // Forward the FULL query string (code, flow, error…) to the app. Values are never
+  // shown, logged or sent anywhere; the PKCE code is useless without the phone's verifier.
+  var query = window.location.search || '';
+  var hash = window.location.hash || '';
+  var appUrl = 'liftinglegends://auth/callback' + query + hash;
+  var params = new URLSearchParams(query);
+  var hashParams = new URLSearchParams(hash.replace(/^#/, ''));
+  var flow = params.get('flow');
+  var failed = params.has('error') || params.has('error_code') || hashParams.has('error');
+
+  // Keep the code out of the address bar / history once captured.
+  try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
+
+  var ua = navigator.userAgent || '';
+  var isPhone = /Android|iPhone|iPad|iPod/i.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPadOS
+
+  var title = document.getElementById('title');
+  var body = document.getElementById('body');
+  var hint = document.getElementById('hint');
+  var open = document.getElementById('open');
+
+  function show(t, b, h) {
+    title.textContent = t;
+    body.textContent = b;
+    if (h) { hint.textContent = h; hint.hidden = false; }
+  }
+
+  if (failed) {
+    show('Link expired',
+      'This link is invalid, expired or already used.',
+      'Request a new one from the Overclock app.');
+    return;
+  }
+
+  if (!isPhone) {
+    if (flow === 'recovery') {
+      show('Open on your phone',
+        'Password reset links only work on the phone where you requested them.',
+        'Open this email on that phone and tap the link again.');
+    } else if (flow === 'signup') {
+      show('Email confirmed',
+        'Your Overclock account is active.',
+        'Open Overclock on your phone and sign in.');
+    } else {
+      show('Open on your phone', 'Open this link on your phone with Overclock installed.');
+    }
+    return;
+  }
+
+  open.href = appUrl;
+  open.hidden = false;
+  if (flow === 'recovery') {
+    show('Reset password', 'Opening Overclock so you can set a new password.',
+      "If the app doesn't open, tap the button below.");
+  } else if (flow === 'signup') {
+    show('Email confirmed', 'Opening Overclock to finish setting up your account.',
+      "If the app doesn't open, tap the button below, or open Overclock and sign in.");
+  } else {
+    show('Opening Overclock', '', "If the app doesn't open, tap the button below.");
+  }
+  window.location.href = appUrl;
+})();
+</script>
+</body>
+</html>
